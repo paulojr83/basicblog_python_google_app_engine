@@ -94,6 +94,20 @@ def valid_pw(name, password, h):
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
 
+def login_required(func):
+    """
+    A decorator to confirm a user is logged in or redirect as needed.
+    """
+
+    def login(self, *args, **kwargs):
+        # Redirect to login if user not logged in, else execute func.
+        if not self.user:
+            self.redirect("/login")
+        else:
+            func(self, *args, **kwargs)
+
+    return login
+
 class User(db.Model):
     name = db.StringProperty(required = True)
     pw_hash = db.StringProperty(required = True)
@@ -158,6 +172,7 @@ class PostPage(Handler):
 
 
 class EditArticle(Handler):
+    @login_required
     def get(self, post_id):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
@@ -167,78 +182,78 @@ class EditArticle(Handler):
             return
         self.render("edit.html", article = article)
 
+    @login_required
     def post(self, post_id):
-        if not self.user:
-            self.redirect('/article')
-
         subject = self.request.get("subject")
         article = self.request.get("article")
+        id_article = self.request.get("id_article")
 
-        key = db.Key.from_path('Article', int(post_id), parent=article_key())
+        key = db.Key.from_path('Article', int(id_article), parent=article_key())
         a = db.get(key)
 
-        if subject and article:
+        if a and subject and article:
             a.subject = subject
             a.article = article
             a.put()
             success = "article update"
-            self.render("edit.html", author=self.user.name, article=a, success= success)
+            return self.render("edit.html", author=self.user.name, article=a, success= success)
 
         else:
             error = "Subject and article has to be filled, please!"
-            self.render("edit.html", article=a, error=error)
+            return self.render("edit.html", article=a, error=error)
 
 class RemoveArticle(Handler):
+    @login_required
     def get(self, post_id):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
 
         if not article:
-            self.render('/404.html')
-            return
+            return self.render('/404.html')
+
         article.delete()
-        self.render('/article-delete.html')
+        return self.render('/article-delete.html')
 
 class LikeArticle(Handler):
+    @login_required
     def get(self, post_id):
-        likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2",self.user.name, post_id)
 
+        likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2",self.user.name, post_id)
         if likes:
-            self.redirect('/')
-            return
+            return self.redirect('/')
         else:
             l = Likes(id_user=self.user.name, id_article=post_id)
             l.put()
-            self.redirect('/')
+            return self.redirect('/')
 
 class DisLikeArticle(Handler):
+    @login_required
     def get(self, post_id):
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2", self.user.name, post_id)
         if likes:
             for l in likes:
                 l.delete()
-            self.redirect('/')
+            return self.redirect('/')
         else:
-            self.redirect('/')
+            return self.redirect('/')
 
 class NewArticle(Handler):
+    @login_required
     def get(self):
         if self.user:
             self.render("form.html")
         else:
-            self.redirect("/login")
+            return self.redirect("/login")
 
+    @login_required
     def post(self):
-        if not self.user:
-            self.redirect('/article')
-
         subject = self.request.get("subject")
         article = self.request.get("article")
 
         if subject and article:
             p = Article(parent = article_key(), subject=subject, author=self.user.name, article=article)
             p.put()
-            self.redirect('/article/%s' % str(p.key().id()))
+            return self.redirect('/article/%s' % str(p.key().id()))
         else:
             error = "Subject and article has to be filled, please!"
             self.render("form.html", subject=subject, author=self.user.name, article=article, error=error)
@@ -258,7 +273,7 @@ def valid_email(email):
 
 class Signup(Handler):
     def get(self):
-        self.render("signup-form.html")
+        return self.render("signup-form.html")
 
     def post(self):
         have_error = False
@@ -286,7 +301,7 @@ class Signup(Handler):
             have_error = True
 
         if have_error:
-            self.render('signup-form.html', **params)
+            return self.render('signup-form.html', **params)
         else:
             self.done()
 
@@ -305,18 +320,22 @@ class Register(Signup):
             u.put()
 
             self.login(u)
-            self.redirect('/welcome')
+            return self.redirect('/welcome')
 
 class Welcome(Handler):
     def get(self):
         if self.user:
             self.render('welcome.html', username=self.user.name)
         else:
-            self.redirect('/signup')
+            return self.redirect('/signup')
 
 class Login(Handler):
+
     def get(self):
-        self.render('login-form.html')
+        if not self.user:
+            self.render('login-form.html')
+        else:
+            return self.redirect('/')
 
     def post(self):
         username = self.request.get('username')
@@ -325,7 +344,7 @@ class Login(Handler):
         u = User.login(username, password)
         if u:
             self.login(u)
-            self.redirect('/')
+            return self.redirect('/')
         else:
             msg = 'Invalid'
             self.render('login-form.html', error = msg)
@@ -333,7 +352,7 @@ class Login(Handler):
 class Logout(Handler):
     def get(self):
         self.logout()
-        self.redirect('/article')
+        return  self.redirect('/article')
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/article/?', BlogFront),
