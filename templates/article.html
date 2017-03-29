@@ -1,0 +1,42 @@
+{% include 'imports.html' without context %}
+{% block article %}
+<div class="container">
+
+	<div class="row">
+		<div class="col-12">
+			<a href="/"><h2>Quiz: Basic Blog</h2></a>
+			<hr>
+			{% if user %}
+        		<a href="/article/new"><img src="/images/icon_add_16px.png" class="add-icon" alt="New Article"></a>
+    		{% endif %}
+		</div>
+	</div>
+
+	<section class="row">
+		<div class="col-12">
+			<hr>
+			<article>
+
+				<header class="article-title" style="background: url(../images/marcador.png) no-repeat left 1px; padding-left: 80px;margin-left: -21px;line-height: 1.5em;">{{article.subject}}</header>
+				<div >
+					<i class="fa fa-calendar created" aria-hidden="true"> <label id="created"> {{article.created.strftime("%d %b, %Y")}} </label> - </i>
+					<i class="fa fa-user-circle author" aria-hidden="true">{{article.author}}</i>
+				</div>
+
+				<pre class="article-body"> {{article.article | safe}}</pre>
+
+			</article>
+
+		</div>
+	</section>
+
+	<div class="row">
+
+		<div class="col-12">
+			<hr>
+			<a href="/"> <h2>Back</h2></a>
+		</div>
+	</div>
+
+</div>
+{% endblock %}

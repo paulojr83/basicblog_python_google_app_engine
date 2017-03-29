@@ -1,0 +1,301 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1.4;
+  background: #FFF url(../images/bg3.png) repeat-y center;
+  z-index: -1;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+} 
+
+a {
+text-decoration: none;
+}
+
+h1, 
+h2, 
+h3, 
+h4 {
+	font-family: "Gotham", sans-serif;
+	margin: 0;
+}
+
+h1 {
+	color:#2d3c49;
+	font-weight: 300;
+	font-size: 3em;
+}
+
+h2 {
+    color: #7d97ad;
+    font-weight: 300;
+    font-size: 2em;
+    margin-left: 20px;
+}
+
+.col-4 h2 {
+    text-align: center;
+    text-transform: uppercase;
+    color: #2d3c49;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 950px;
+    min-width: 375px;
+
+}
+
+img {
+    width: 100%;    
+}
+
+figure {
+  margin: 1em 0 1em 0;
+}
+
+.title-profile {
+    margin-top: 10px;
+    text-align: right;
+    text-transform: uppercase;    
+}
+
+.a-link {
+    text-decoration: none;
+    color: #2d3c49;    
+}
+
+hr {
+    border-top: 4px solid #7d97ad;
+}
+
+.col-4 figure {
+    margin-right: 10px;
+}
+
+.logo {
+    width: 70px;
+    height: 70px;
+    margin: 10px;        
+}
+
+.add-icon {
+    width: 18px;
+    height: 18px;
+    margin-top: -5px;
+    margin-right: 10px;           
+}
+
+.add-icon:hover {
+    cursor:pointer;
+}
+
+
+.row  {
+    width: 100%;    
+    display: flex;
+    flex-wrap: wrap;
+}
+
+form {
+    margin-left: 5%;
+    margin-right: 10%;
+}
+.col-1 {
+    width: 8.33%;
+}
+
+.col-2 {
+    width: 16.66%;
+}
+
+.col-3 {
+    width: 25%;
+}
+
+.col-4 {
+    width: 33.33%;
+}
+
+.col-5 {
+    width: 41.66%;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.col-7 {
+    width: 58.33%;
+}
+
+.col-8 {
+    width: 66.66%;
+}
+
+.col-9 {
+    width: 75%;
+}
+
+.col-10 {
+    width: 83.33%;
+}
+
+.col-11 {
+    width: 91.66%;
+}
+
+.col-12 {
+    width: 100%;
+}
+
+.first,
+.secunder,
+.third {
+    text-align: center;
+}
+
+@media screen and (max-width:375px) {
+    h1{
+        font-size: 1.5em;
+    }
+}
+
+
+input[type=text],
+ input[type=password],
+ input[type=email] {
+    width: 100%;
+    padding: 8px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {    
+    width: 100%;
+    padding: 8px 5px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+
+
+article {
+    margin-top: 20px;        
+    margin: 15px 0;
+    padding: 8px;
+    background-color:#f8f8f8;
+}
+
+.article-title {
+    font-weight: 200px;
+    font-size: 3em;
+    color:#ff5300;
+}
+
+.article-body {
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+.author{
+    color:#1169ee;
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+.error {
+    color: red;
+}
+
+
+.entry-title {
+    font-weight: normal;
+    line-height: 1.5em;
+    padding-bottom: .3em;
+    padding-top: 15px;
+    background: url(../imgages/marcador.png) no-repeat left 21px;
+    padding-left: 74px;
+    margin-left: -73px;
+}
+
+#colophon {
+    width: 1000px;
+    margin: 0 auto;
+    margin-top: -104px;
+    clear: both;
+    overflow: hidden;
+}
+
+.copyright {
+    padding: 25px 20px 25px 20px;
+    border-top: 1px solid #bbbeb6;
+}
+
+#rodape {
+    padding-top: 20px;
+    background: #60626f;
+}
+
+.actions {
+    display: block;
+}
+
+.actions i {
+    margin: 10px 10px;
+}
+
+.success {
+    color: cornflowerblue;
+}

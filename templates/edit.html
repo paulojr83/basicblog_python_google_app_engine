@@ -1,0 +1,46 @@
+{% include 'imports.html' without context %}
+
+<div class="container">
+	<header class="row">
+		<div class="col-12 title-profile">
+			<div>
+				<h1>Basic Blog</h1>
+			</div>
+		</div>
+	</header>
+
+	<div class="row">
+		<div class="col-12">
+			<h2>Edit Article <span class="error"> {{error}} </span> <span class="success"> {{success}} </span></h2>
+			<hr>
+		</div>
+	</div>
+
+	<section class="row">
+		<div class="col-12">
+			<form method="POST">
+				<label>Author
+					<input type="text" name="author" placeholder="Author..." value="{{user.name}}" disabled>
+				</label>
+
+				<label>Subject
+					<input type="text" name="subject" placeholder="Subject..." value="{{article.subject}}">
+				</label>
+
+				<label>Article
+					<textArea name="article" placeholder="article...">{{article.article}}</textArea>
+				</label>
+
+
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+	</section>
+
+	<div class="row">
+        <div class="col-12">
+            <hr>
+            <a href="/"> <h2>Back</h2></a>
+        </div>
+    </div>
+</div>

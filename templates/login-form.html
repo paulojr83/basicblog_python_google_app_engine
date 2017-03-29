@@ -1,0 +1,40 @@
+{% include 'imports.html' without context %}
+{% include 'header.html' without context %}
+<div class="container">
+  <div class="row">
+
+    <header class="row">
+		<div class="col-12 title-profile">
+			<div>
+				<h1>Login <span class="error"> {{error}} </span> </h1>
+                <a href="/signup">signup</a>
+			</div>
+
+            <hr>
+        </div>
+	</header>
+
+  </div>
+  <div class="row">
+    <div class="col-12">
+
+      <form method="post">
+        <label>Username
+          <input type="text" name="username" value="{{username}}" placeholder="username">
+        </label>
+
+        <label>Password
+            <input type="password" name="password" value="" placeholder="password">
+        </label>
+        <input type="submit" style="width: 100px">
+      </form>
+    </div>
+  </div>
+
+    <div class="row">
+        <div class="col-12">
+            <hr>
+            <a href="/"> <h2>Back</h2></a>
+        </div>
+    </div>
+</div>

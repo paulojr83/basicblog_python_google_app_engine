@@ -1,0 +1,29 @@
+.col-4 {
+    width: 100%;
+}
+
+.col-12 {
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.header-logo {
+    width: 25%;
+}
+
+.title-profile {
+    width: 75%;
+}
+
+.first,
+.secunder, 
+.third {
+    width: 100%;
+}
+
+h1 {
+    color: #2d3c49;
+    font-weight: 300;
+    font-size: 2em;
+}

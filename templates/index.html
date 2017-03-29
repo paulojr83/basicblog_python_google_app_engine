@@ -1,0 +1,58 @@
+{% include 'imports.html' without context %}
+<div class="container">
+	<header class="row">
+          <div class="col-12 title-profile">
+              <div>
+                  <h1>Basic Blog</h1>
+					{% if user %}
+						<h3>{{user.name}} (<a class="login-link" href="/logout">logout</a>)</h3>
+					{% else %}
+						<a href="/login"><img src="/images/login-16.png" class="add-icon" alt="Login-In"></a>
+						<a href="/signup">signup</a>
+					{% endif %}
+              </div>
+          </div>
+    </header>
+
+	<div class="row">
+		<div class="col-12">
+			<h2>Quiz: Basic Blog</h2>
+			<hr>
+			{% if user %}
+        		<a href="/article/new"><img src="/images/icon_add_16px.png" class="add-icon" alt="New Article"></a>
+    		{% endif %}
+		</div>
+	</div>
+
+	<section class="row">
+		<div class="col-12">
+			{% for article in articles %}
+				<article>
+					<header class="article-title" style="background: url(../images/marcador.png) no-repeat left 1px; padding-left: 80px;margin-left: -21px;line-height: 1.5em;">{{article.subject}}</header>
+					<div >
+						<i class="fa fa-calendar created" aria-hidden="true"> <label id="created"> {{article.created.strftime("%d %b, %Y")}} </label> - </i>
+						<i class="fa fa-user-circle author" aria-hidden="true">{{article.author}}</i>
+					</div>
+
+					<pre class="article-body">{{article.article}}</pre>
+
+					<hr style="color: #ad7d7d;">
+					{% if user %}
+					<div class="actions">
+						{% if user.name == article.author %}
+							<a href="/article/edit/{{article.key().id()}}" class="btn btn-danger" aria-label="Delete"><i class="fa fa-pencil" aria-hidden="true"> </i> </a>
+							<a href="/article/remove/{{article.key().id()}}"><i class="fa fa-trash" aria-hidden="true"> </i> </a>
+						{% else %}
+							<a href="/article/like/{{article.key().id()}}" class="btn btn-lg btn-success"> <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> </i> </a>
+							<a href="/article/dislike/{{article.key().id()}}" class="btn btn-danger" aria-label="Delete"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i> </i> </a>
+						{% endif %}
+					</div>
+					{% endif %}
+
+				</article>
+
+			{% endfor %}
+		</div>
+	</section>
+
+</div>
