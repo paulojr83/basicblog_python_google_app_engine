@@ -191,7 +191,7 @@ class EditArticle(Handler):
         key = db.Key.from_path('Article', int(id_article), parent=article_key())
         a = db.get(key)
 
-        if a and subject and article:
+        if a and subject and article and a.author == self.user.name:
             a.subject = subject
             a.article = article
             a.put()
@@ -208,7 +208,7 @@ class RemoveArticle(Handler):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
 
-        if not article:
+        if not article and article.author == self.user.name:
             return self.render('/404.html')
 
         article.delete()
