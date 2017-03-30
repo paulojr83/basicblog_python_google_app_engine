@@ -68,12 +68,12 @@ class MainPage(Handler):
     articles_likes = []
 
     for a in articles:
-        likes = db.GqlQuery("select * from Likes where id_article =:1", a.key().id())
+        likes = db.GqlQuery("select * from Likes where id_article =:1"
+                            , a.key().id())
         a.likes = likes
         articles_likes.append(a)
 
     self.render('index.html', user=self.user, articles=articles_likes)
-
 
 ##### user stuff
 def make_salt(length = 5):
@@ -192,8 +192,9 @@ class EditArticle(Handler):
             a.article = article
             a.put()
             success = "article update"
-            return self.render("edit.html", author=self.user.name, article=a, success=success)
-
+            return self.render("edit.html"
+                               ,author=self.user.name
+                               ,article=a, success=success)
         else:
             error = "Subject and article has to be filled, please!"
             return self.render("edit.html", article=a, error=error)
@@ -203,7 +204,6 @@ class RemoveArticle(Handler):
     def get(self, post_id):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
-
         if not article or article.author != self.user.name:
             error = "You don't have permission to do this"
             return self.render('/404.html', error=error)
@@ -216,7 +216,6 @@ class LikeArticle(Handler):
     def get(self, post_id):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
-
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
                             ,self.user.name
                             ,post_id)
@@ -234,7 +233,6 @@ class DisLikeArticle(Handler):
     def get(self, post_id):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
-
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
                             ,self.user.name
                             ,post_id)
@@ -243,8 +241,8 @@ class DisLikeArticle(Handler):
             for l in likes:
                 if l.id_user == self.user.name:
                    l.delete()
-
             return self.redirect('/')
+
         else:
             return self.redirect('/')
 
@@ -347,7 +345,6 @@ class Welcome(Handler):
             return self.redirect('/signup')
 
 class Login(Handler):
-
     def get(self):
         if not self.user:
             self.render('login-form.html')
@@ -369,7 +366,7 @@ class Login(Handler):
 class Logout(Handler):
     def get(self):
         self.logout()
-        return  self.redirect('/article')
+        return self.redirect('/article')
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/article/?', BlogFront),
@@ -383,5 +380,4 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/article/remove/([0-9]+)', RemoveArticle),
                                ('/article/like/([0-9]+)', LikeArticle),
                                ('/article/dislike/([0-9]+)', DisLikeArticle)
-                               ],
-                              debug=True)
+                               ],debug=True)
