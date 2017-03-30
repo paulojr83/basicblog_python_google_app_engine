@@ -220,7 +220,7 @@ class LikeArticle(Handler):
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
                             ,self.user.name
                             ,post_id)
-        if likes or article.author != self.user.name:
+        if likes or article.author == self.user.name:
             return self.redirect('/')
 
         else:
