@@ -3,25 +3,23 @@ import re
 import random
 import hashlib
 import hmac
-from string import letters
-
 import webapp2
 import jinja2
 
 from google.appengine.ext import db
+from string import letters
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape = True)
-
-secret = 'fart'
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
+                               autoescape=True)
+SECRET = 'fart'
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
 def make_secure_val(val):
-    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+    return '%s|%s' % (val, hmac.new(SECRET, val).hexdigest())
 
 def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
@@ -74,7 +72,7 @@ class MainPage(Handler):
         a.likes = likes
         articles_likes.append(a)
 
-    self.render('index.html', user = self.user, articles=articles_likes)
+    self.render('index.html', user=self.user, articles=articles_likes)
 
 
 ##### user stuff
@@ -98,7 +96,6 @@ def login_required(func):
     """
     A decorator to confirm a user is logged in or redirect as needed.
     """
-
     def login(self, *args, **kwargs):
         # Redirect to login if user not logged in, else execute func.
         if not self.user:
@@ -125,10 +122,10 @@ class User(db.Model):
     @classmethod
     def register(cls, name, pw, email = None):
         pw_hash = make_pw_hash(name, pw)
-        return User(parent = users_key(),
-                    name = name,
-                    pw_hash = pw_hash,
-                    email = email)
+        return User(parent=users_key(),
+                    name=name,
+                    pw_hash=pw_hash,
+                    email=email)
 
     @classmethod
     def login(cls, name, pw):
@@ -168,8 +165,7 @@ class PostPage(Handler):
             self.error(404)
             return
 
-        self.render("article.html", article = article)
-
+        self.render("article.html", article=article)
 
 class EditArticle(Handler):
     @login_required
@@ -196,7 +192,7 @@ class EditArticle(Handler):
             a.article = article
             a.put()
             success = "article update"
-            return self.render("edit.html", author=self.user.name, article=a, success= success)
+            return self.render("edit.html", author=self.user.name, article=a, success=success)
 
         else:
             error = "Subject and article has to be filled, please!"
@@ -217,10 +213,12 @@ class RemoveArticle(Handler):
 class LikeArticle(Handler):
     @login_required
     def get(self, post_id):
-
-        likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2",self.user.name, post_id)
+        likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
+                            ,self.user.name
+                            ,post_id)
         if likes:
             return self.redirect('/')
+
         else:
             l = Likes(id_user=self.user.name, id_article=post_id)
             l.put()
@@ -229,7 +227,9 @@ class LikeArticle(Handler):
 class DisLikeArticle(Handler):
     @login_required
     def get(self, post_id):
-        likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2", self.user.name, post_id)
+        likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
+                            ,self.user.name
+                            ,post_id)
         if likes:
             for l in likes:
                 l.delete()
@@ -251,12 +251,19 @@ class NewArticle(Handler):
         article = self.request.get("article")
 
         if subject and article:
-            p = Article(parent = article_key(), subject=subject, author=self.user.name, article=article)
+            p = Article(parent=article_key()
+                        ,subject=subject
+                        ,author=self.user.name
+                        ,article=article)
             p.put()
             return self.redirect('/article/%s' % str(p.key().id()))
         else:
             error = "Subject and article has to be filled, please!"
-            self.render("form.html", subject=subject, author=self.user.name, article=article, error=error)
+            self.render("form.html"
+                        ,subject=subject
+                        ,author=self.user.name
+                        ,article=article
+                        ,error=error)
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -277,13 +284,12 @@ class Signup(Handler):
 
     def post(self):
         have_error = False
-        self.username = self.request.get('username')
-        self.password = self.request.get('password')
-        self.verify = self.request.get('verify')
-        self.email = self.request.get('email')
+        self.username=self.request.get('username')
+        self.password=self.request.get('password')
+        self.verify=self.request.get('verify')
+        self.email=self.request.get('email')
 
-        params = dict(username = self.username,
-                      email = self.email)
+        params = dict(username=self.username, email=self.email)
 
         if not valid_username(self.username):
             params['error_username'] = "That's not a valid username."
@@ -314,7 +320,7 @@ class Register(Signup):
         u = User.by_name(self.username)
         if u:
             msg = 'That user already exists.'
-            self.render('signup-form.html', error_username = msg)
+            self.render('signup-form.html', error_username=msg)
         else:
             u = User.register(self.username, self.password, self.email)
             u.put()
@@ -347,7 +353,7 @@ class Login(Handler):
             return self.redirect('/')
         else:
             msg = 'Invalid'
-            self.render('login-form.html', error = msg)
+            self.render('login-form.html', error=msg)
 
 class Logout(Handler):
     def get(self):
