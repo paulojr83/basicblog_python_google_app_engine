@@ -162,8 +162,7 @@ class PostPage(Handler):
         article = db.get(key)
 
         if not article:
-            self.error(404)
-            return
+            return self.error(404)
 
         self.render("article.html", article=article)
 
@@ -173,8 +172,9 @@ class EditArticle(Handler):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
 
-        if not article:
-            self.render('/404.html')
+        if not article and article.author == self.user.name:
+            error = "You don't have permission to do this"
+            self.render('/404.html', error=error)
             return
         self.render("edit.html", article = article)
 
@@ -205,7 +205,8 @@ class RemoveArticle(Handler):
         article = db.get(key)
 
         if not article and article.author == self.user.name:
-            return self.render('/404.html')
+            error = "You don't have permission to do this"
+            return self.render('/404.html', error=error)
 
         article.delete()
         return self.render('/article-delete.html')
@@ -216,13 +217,14 @@ class LikeArticle(Handler):
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
                             ,self.user.name
                             ,post_id)
-        if likes:
+        if likes :
             return self.redirect('/')
 
         else:
-            l = Likes(id_user=self.user.name, id_article=post_id)
-            l.put()
-            return self.redirect('/')
+            if likes.id_user != self.user.name:
+               l = Likes(id_user=self.user.name, id_article=post_id)
+               l.put()
+               return self.redirect('/')
 
 class DisLikeArticle(Handler):
     @login_required
@@ -232,7 +234,9 @@ class DisLikeArticle(Handler):
                             ,post_id)
         if likes:
             for l in likes:
-                l.delete()
+                if l.id_user == self.user.name:
+                   l.delete()
+
             return self.redirect('/')
         else:
             return self.redirect('/')
