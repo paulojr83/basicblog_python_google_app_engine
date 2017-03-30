@@ -204,7 +204,7 @@ class RemoveArticle(Handler):
         key = db.Key.from_path('Article', int(post_id), parent=article_key())
         article = db.get(key)
 
-        if not article and article.author == self.user.name:
+        if not article or article.author != self.user.name:
             error = "You don't have permission to do this"
             return self.render('/404.html', error=error)
 
@@ -214,10 +214,13 @@ class RemoveArticle(Handler):
 class LikeArticle(Handler):
     @login_required
     def get(self, post_id):
+        key = db.Key.from_path('Article', int(post_id), parent=article_key())
+        article = db.get(key)
+
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
                             ,self.user.name
                             ,post_id)
-        if likes :
+        if likes or article.author != self.user.name:
             return self.redirect('/')
 
         else:
@@ -229,10 +232,14 @@ class LikeArticle(Handler):
 class DisLikeArticle(Handler):
     @login_required
     def get(self, post_id):
+        key = db.Key.from_path('Article', int(post_id), parent=article_key())
+        article = db.get(key)
+
         likes = db.GqlQuery("select * from Likes where id_user =:1 and id_article =:2"
                             ,self.user.name
                             ,post_id)
-        if likes:
+
+        if likes or article.author != self.user.name:
             for l in likes:
                 if l.id_user == self.user.name:
                    l.delete()
