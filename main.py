@@ -67,12 +67,17 @@ class MainPage(Handler):
     articles = greetings = Article.all().order('-created')
     articles_likes = []
 
-    for a in articles:
-        likes = db.GqlQuery("select * from Likes where id_article =:1"
-                            , a.key().id())
+    for a in articles.fetch(limit=10):
+        likes = db.Query(Likes)
+        likes.filter("id_article =", str(a.key().id()))
         a.likes = likes
-        articles_likes.append(a)
 
+        comments = db.Query(Comment)
+        comments.filter("id_article =", str( a.key().id())).fetch(limit=3)
+        comments.order("-created")
+
+        a.comments = comments
+        articles_likes.append(a)
     self.render('index.html', user=self.user, articles=articles_likes)
 
 ##### user stuff
@@ -151,6 +156,19 @@ class Article(db.Model):
         self._render_text = self.article.replace('\n', '<br>')
         return render_str("article.html", p = self)
 
+def comment_key(name = 'default'):
+    return db.Key.from_path('comments', name)
+
+class Comment(db.Model):
+    user = db.StringProperty(required=True)
+    id_article = db.StringProperty(required=True)
+    comment = db.TextProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+
+    def render(self):
+        self._render_text = self.comment.replace('\n', '<br>')
+        return render_str("comment.html", p = self)
+
 class BlogFront(Handler):
     def get(self):
         articles = greetings = Article.all().order('-created')
@@ -198,6 +216,57 @@ class EditArticle(Handler):
         else:
             error = "Subject and article has to be filled, please!"
             return self.render("edit.html", article=a, error=error)
+
+class CommentArticle(Handler):
+    def post(self):
+        comment = self.request.get("comment")
+        id_article = self.request.get("id_article")
+        if comment and id_article:
+            c = Comment(user=self.user.name, id_article=id_article, comment=comment)
+            c.put()
+
+            return self.redirect("/")
+        else:
+            error = "Comment has to be filled, please!"
+
+class EditComment(Handler):
+    @login_required
+    def get(self, post_id):
+        if self.user.name:
+            comment = Comment.get_by_id(int(post_id))
+
+        if not comment and comment.user == self.user.name:
+            error = "You don't have permission to do this"
+            self.render('/404.html', error=comment)
+            return
+        self.render("comment.html", comment=comment)
+
+    @login_required
+    def post(self, post_id):
+        if self.user.name:
+            comment = self.request.get("comment")
+            id_comment= self.request.get("id_comment")
+            c=Comment.get_by_id(int(post_id))
+
+        if c and comment and c.user == self.user.name and c.key().id() == id_comment:
+            c.comment = comment
+            c.put()
+            success = "comment update"
+            self.render("comment.html",comment=c, success=success)
+        else:
+            error = "Subject and article has to be filled, please!"
+            return self.render("comment.html", comment=comment, error=error)
+
+class RemoveComment(Handler):
+    @login_required
+    def get(self, post_id):
+        comment = Comment.get_by_id(int(post_id))
+        if not comment or comment.user != self.user.name:
+            error = "You don't have permission to do this"
+            return self.render('/404.html', error=error)
+
+        comment.delete()
+        return self.render('/comment-delete.html')
 
 class RemoveArticle(Handler):
     @login_required
@@ -377,6 +446,9 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/logout', Logout),
                                ('/welcome', Welcome),
                                ('/article/edit/([0-9]+)', EditArticle),
+                               ('/article/comment', CommentArticle),
+                               ('/comment/edit/([0-9]+)', EditComment),
+                               ('/comment/remove/([0-9]+)', RemoveComment),
                                ('/article/remove/([0-9]+)', RemoveArticle),
                                ('/article/like/([0-9]+)', LikeArticle),
                                ('/article/dislike/([0-9]+)', DisLikeArticle)

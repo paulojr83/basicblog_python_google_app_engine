@@ -1,0 +1,38 @@
+{% include 'imports.html' without context %}
+<div class="container">
+    <header class="row">
+		<div class="col-12 title-profile">
+			<div>
+				<h1>Basic Blog</h1>
+			</div>
+		</div>
+	</header>
+
+	<div class="row">
+		<div class="col-12">
+			<h2>Update Comment  <span class="error"> {{error}} </span> </h2>
+			<hr>
+		</div>
+	</div>
+
+	<header class="row">
+          <div class="col-12">
+             <form method="POST"  class="stitched" style="margin: 0px;margin-top: 20px;">
+                <label>Comment
+                    <textArea name="comment" placeholder="comment...">{{comment.comment}}</textArea>
+                </label>
+                <input type="hidden" name="id_article" value="{{comment.id_article}}">
+                 <input type="hidden" name="id_comment" value="{{comment.key().id()}}">
+
+                <input type="submit" value=" Update Comment" style="min-width: 130px;max-width: 130px;">
+            </form>
+          </div>
+    </header>
+
+     <div class="row">
+      <div class="col-12">
+          <hr>
+          <a href="/"> <h2>Go to the Articles</h2></a>
+      </div>
+    </div>
+</div>

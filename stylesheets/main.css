@@ -299,3 +299,60 @@ article {
 .success {
     color: cornflowerblue;
 }
+
+.stitched {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px;
+    background: rgba(255, 243, 245, 0.66);
+    line-height: 1.3em;
+    border-radius: 10px;
+    box-shadow: 0 0 0 2px #ffffff, 2px 1px 6px 4px rgba(10, 10, 0, 0.5);
+}
+
+
+.form-stiched {
+    padding: 20px;
+    margin: 10px;
+    background: #7d97ad;
+    line-height: 1.3em;
+    border-radius: 10px;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
