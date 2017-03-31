@@ -218,6 +218,7 @@ class EditArticle(Handler):
             return self.render("edit.html", article=a, error=error)
 
 class CommentArticle(Handler):
+    @login_required
     def post(self):
         comment = self.request.get("comment")
         id_article = self.request.get("id_article")
@@ -248,14 +249,14 @@ class EditComment(Handler):
             id_comment= self.request.get("id_comment")
             c=Comment.get_by_id(int(post_id))
 
-        if c and comment and c.user == self.user.name and c.key().id() == id_comment:
+        if c and comment and c.user == self.user.name and c.key().id() == int(id_comment):
             c.comment = comment
             c.put()
             success = "comment update"
             self.render("comment.html",comment=c, success=success)
         else:
             error = "Subject and article has to be filled, please!"
-            return self.render("comment.html", comment=comment, error=error)
+            return self.render("comment.html", comment=c, error=error)
 
 class RemoveComment(Handler):
     @login_required
