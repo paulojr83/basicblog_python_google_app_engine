@@ -39,7 +39,7 @@ Be sure to store passwords securely.
 * After a successful login, the user is directed to the same welcome page from Step 2.
 * Watch the demo for more details.
 
-## Step 4: Add Logout
+## Step 4: Logout
 * Have a logout form that validates user input, and displays the error(s) when necessary.
 * After logging out, the cookie is cleared and user is redirected to the Signup page from Step 2.
 * Watch the demo for more details.
